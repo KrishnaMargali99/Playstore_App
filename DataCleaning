@@ -1,0 +1,124 @@
+import pandas as pd
+import warnings
+warnings.filterwarnings("ignore")
+#Task1
+#Loading the data
+def read_data_from_csv():
+    df=pd.read_csv('playstore_apps.csv')
+    #read the playstore_apps.csv dataset and return the data
+    return df
+
+
+
+#Task2: Keep Only Required columns,
+def remove_unwanted_columns():
+    #do not remove this line and do not change the function names
+    df=read_data_from_csv()
+    #remove the unwanted column and use inplace= True for dynamically updating the dataset
+    # write your code here
+    columns_to_remove=['Size','Current Ver','Android Ver','Last Updated']
+    df.drop(columns_to_remove,axis=1,inplace=True)
+    return df
+
+
+#TASK3 : REMOVE DUPLICATES FROM THE DATASET
+def remove_duplicates():
+    # do not remove this line and do not change the function names
+    df=remove_unwanted_columns()
+    #write your code here
+    df.drop_duplicates(inplace=True)
+    return df
+
+
+#TASK4: HANDLE NULL VALUES IN THE DATASET
+def no_of_null_values():
+    df= remove_duplicates()
+    ##write your code here and return the null values
+    columns=df.isnull().sum()
+    return columns
+
+
+#TASK5: Replace the null values
+
+def replace_null_values():
+    df=remove_duplicates()
+    numerical_col= df.select_dtypes(include=['int64','float64']).columns
+    categorical_col = df.select_dtypes(include=['object','category']).columns
+    for i in numerical_col:
+        mean = df[i].mean()
+        df[i].fillna(mean,inplace=True)
+    for j in categorical_col:
+        mode=df[j].mode().iloc[0]
+        df[j].fillna(mode,inplace=True)
+    # write your code here
+    return df
+
+
+#TASK6: check unique values of Category column and remove irrelevant category
+def check_unique_values():
+    df= replace_null_values()
+    unique_values= df['Category'].unique()
+    df.drop(df[df['Category'] == '1.9'].index, inplace=True)
+    #write your code here
+    return df
+
+
+
+#TASK7: Check unique values of "Type" column,
+def free_or_paid():
+    df= check_unique_values()
+    unique_values=df['Type'].unique()
+    type_counts= df['Type'].value_counts()
+    maximum_count=type_counts.idxmax()
+    # for value in unique_values:
+    #     if value!= 'Free' or 'Paid':
+    #         x=value
+    df.replace(0,maximum_count,inplace=True)
+    type_counts2=df['Type'].value_counts()
+    return type_counts2
+
+
+# Task 8: Remove apps with irrelevant names. starting with '?'
+##export the cleaned dataset to new file as 'cleaned_apps_db.csv'
+def irrleveant_names():
+    df=check_unique_values()
+     #write your code here
+    irreleveant_names=df[df['App'].str.startswith('?')]
+    df.drop(irreleveant_names.index,inplace=True)
+    df.to_csv('cleaned_apps_db.csv', index=False)
+    return df
+
+
+#Task9: Remove rows with nan values in the  Reviews dataset
+#Read the playstore_reviews.csv file as df1 and return the same
+
+def reviews_dataset():
+    #write your code here
+    df1=pd.read_csv('playstore_reviews.csv')
+    df1.dropna(inplace=True)
+
+    return df1
+
+
+#Task10: Remove identical rows from the dataset and upload the dataset to the database
+#export the cleaned dataset to new file as 'cleaned_reviews_db.csv'
+def remove_identical_rows():
+    df1 = reviews_dataset()
+    #write your code here
+    df1.drop_duplicates(inplace=True)
+    df1.to_csv('cleaned_reviews_db.csv', index=False)
+    return df1
+
+
+#TASK 11
+#follow the instruction in the Task 11 description and complete the task as per it.
+
+#check if mysql table is created using "cleaned_apps_db.csv" and "cleaned_reviews_db.csv"
+#Use this final dataset and upload it on the provided database for performing analysis in  MySQL
+#To run this task click on the terminal and click on the run project
+
+
+
+
+
+
