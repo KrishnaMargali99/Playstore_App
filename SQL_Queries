@@ -1,0 +1,18 @@
+Which Genre has the most number of published apps?
+
+SELECT Genres, COUNT(App) AS publishedApps
+FROM cleaned_apps_db
+GROUP BY
+SELECT Genres, COUNT(App) AS publishedApps
+
+
+Provide the list of all games ordered in such a way that the game that has the highest number of installs is displayed on the top
+SELECT DISTINCT App as 'Name of the game',Installs
+FROM cleaned_apps_db
+WHERE Category = 'Game' 
+ORDER BY Installs DESC
+
+SELECT DISTINCT App as 'Name of the game',Installs
+FROM cleaned_apps_db
+WHERE Category = 'Game' 
+ORDER BY Installs DESC
